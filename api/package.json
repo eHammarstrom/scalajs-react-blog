@@ -1,0 +1,27 @@
+{
+  "name": "glowing-potato-api",
+  "version": "0.0.1",
+  "description": "a backend",
+  "main": "main.js",
+  "scripts": {
+    "build": "babel src/ -d lib/",
+    "prepublish": "yarn run build",
+    "start": "yarn run build && node lib/main.js"
+  },
+  "repository": "https://github.com/eHammarstrom/glowing-potato-api",
+  "author": "Emil Hammarström <emil.a.hammarstrom@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.4",
+    "express": "^4.15.4",
+    "morgan": "^1.8.2",
+    "pg": "^7.1.2",
+    "sequelize": "^4.5.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.53.1"
+  }
+}
