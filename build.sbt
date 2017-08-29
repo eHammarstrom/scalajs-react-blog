@@ -12,6 +12,8 @@ val scalaJSReactVersion = "1.0.0"
 val scalaCssVersion = "0.5.3"
 
 libraryDependencies ++= Seq(
+  "com.typesafe.play" %%% "play-json" % "2.6.3",
+  "fr.hmil" %%% "roshttp" % "2.0.2",
   "com.github.japgolly.scalajs-react" %%% "extra" % scalaJSReactVersion,
   "com.github.japgolly.scalajs-react" %%% "core" % scalaJSReactVersion,
   "com.github.japgolly.scalacss" %%% "core" % scalaCssVersion,
