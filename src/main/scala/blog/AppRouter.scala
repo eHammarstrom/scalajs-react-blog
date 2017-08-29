@@ -33,7 +33,7 @@ object AppRouter {
 
   def layout(c: RouterCtl[BlogPage], r: Resolution[BlogPage]) =
     <.div(
-      components.Header(),
+      components.Header(components.Header.Props(r.page, c)),
       r.render()
     )
 

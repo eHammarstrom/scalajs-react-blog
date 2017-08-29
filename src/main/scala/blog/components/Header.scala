@@ -1,9 +1,12 @@
 package blog.components
 
-import scalacss.Defaults._
-import scalacss.ScalaCssReact._
+import blog.AppRouter.BlogPage
 
+import scalacss.DevDefaults._
+import scalacss.ScalaCssReact._
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.extra.Reusability
+import japgolly.scalajs.react.extra.router.RouterCtl
 import japgolly.scalajs.react.vdom.html_<^._
 
 object Header {
@@ -11,7 +14,10 @@ object Header {
   object Style extends StyleSheet.Inline {
     import dsl._
 
-    val header = style(
+    val content = style(
+      display.flex,
+      justifyContent.center,
+      alignItems.center,
       textAlign.center,
       fontSize(24.pt),
       height(63.px),
@@ -20,9 +26,17 @@ object Header {
     )
   }
 
-  val component = ScalaComponent.builder
-    .static("Header")(<.div(Style.header, "Super BLOG"))
+  case class Props(selectedPage: BlogPage, ctrl: RouterCtl[BlogPage])
+
+  implicit val currentPageReuse = Reusability.by_==[BlogPage]
+  implicit val propsReuse = Reusability.by((_: Props).selectedPage)
+
+  val component = ScalaComponent.builder[Props]("Header")
+    .render_P { P =>
+      <.div(Style.content, s"scalajs-blog/${P.selectedPage}")
+    }
+    .configure(Reusability.shouldComponentUpdate)
     .build
 
-  def apply() = component()
+  def apply(props: Props) = component(props)
 }
