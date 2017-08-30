@@ -5,33 +5,57 @@ import japgolly.scalajs.react.vdom.html_<^.{<, _}
 import fr.hmil.roshttp.HttpRequest
 import fr.hmil.roshttp.Protocol.HTTP
 import monix.execution.Scheduler.Implicits.global
-
 import play.api.libs.json._
 import blog.Model
+import blog.components.{Header, Loading}
+import japgolly.scalajs.react.Callback
 
+import scalacss.DevDefaults._
+import scalacss.ScalaCssReact._
 import scala.concurrent.Future
 
 object PostList {
 
-  case class State(data: List[Model.Post], failed: Boolean)
+  object Style extends StyleSheet.Inline {
+    import dsl._
+
+    val content = style(
+      marginTop(Header._height.px),
+      display.flex,
+      justifyContent.center
+    )
+  }
+
+  case class State(data: List[Model.Post], isLoading: Boolean)
 
   class Backend(t: BackendScope[Unit, State]) {
-    def initialize(S: State): Callback =
-      t.modState(S => S.copy(S.data, S.failed))
+    def initialize(): Callback = Callback.future {
+      for {
+        ls <- retrievePosts()
+      } yield {
+        t.setState(State(ls, isLoading = false))
+      }
+    }
 
     def render(S: State) =
-      if (S.data.isEmpty) {
-        <.div("No posts")
-      } else {
-        <.div(
-          S.data.map(post =>
-            <.div(
-              <.h1(post.title),
-              <.p(post.description)
-            )
-          ).toTagMod
-        )
-      }
+      <.div(Style.content,
+
+        if (S.isLoading) {
+          Loading()
+        } else if (S.data.isEmpty) { // TODO: Display a friendly error
+          <.h1("Error: no posts")
+        } else {
+          <.div(
+            S.data.map(post =>
+              <.div(
+                <.h1(post.title),
+                <.p(post.description)
+              )
+            ).toTagMod
+          )
+        }
+
+      )
   }
 
   def retrievePosts(): Future[List[Model.Post]] = {
@@ -51,14 +75,9 @@ object PostList {
 
   val component = ScalaComponent
     .builder[Unit]("Post list")
-    .initialState(State(Nil, failed = false))
+    .initialState(State(Nil, isLoading = true))
     .renderBackend[Backend]
-    .componentWillMount { c =>
-      retrievePosts().value match {
-        case Some(posts) => c.backend.initialize(State(posts.get, failed = false))
-        case _ => c.backend.initialize(State(Nil, failed = true))
-      }
-    }
+    .componentDidMount(c => c.backend.initialize())
     .build
 
   def apply() = component()

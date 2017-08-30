@@ -10,6 +10,7 @@ import japgolly.scalajs.react.extra.router.RouterCtl
 import japgolly.scalajs.react.vdom.html_<^._
 
 object Header {
+  val _height = 63
 
   object Style extends StyleSheet.Inline {
     import dsl._
@@ -20,7 +21,7 @@ object Header {
       alignItems.center,
       textAlign.center,
       fontSize(24.pt),
-      height(63.px),
+      height(_height.px),
       backgroundColor.mediumaquamarine,
       color.azure
     )
