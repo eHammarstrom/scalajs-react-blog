@@ -65,8 +65,8 @@ object PostList {
       .withPort(3000)
       .withPath("/api/blog/posts")
       .send()
-      .map(s => s.body)
-      .map(s => Json.fromJson[List[Model.Post]](Json.parse(s)))
+      .map(res => Json.parse(res.body))
+      .map(json => Json.fromJson[List[Model.Post]](json))
       .map({
         case s: JsSuccess[List[Model.Post]] => s.value
         case _ => List.empty
@@ -77,7 +77,7 @@ object PostList {
     .builder[Unit]("Post list")
     .initialState(State(Nil, isLoading = true))
     .renderBackend[Backend]
-    .componentDidMount(c => c.backend.initialize())
+    .componentWillMount(c => c.backend.initialize())
     .build
 
   def apply() = component()
