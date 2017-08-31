@@ -3,7 +3,7 @@ package blog.css
 import scalacss.DevDefaults._
 import scalacss.internal.mutable.GlobalRegistry
 import blog.components.{Header, Loading}
-import blog.pages.PostList
+import blog.pages.{Post, PostList}
 
 object AppCss {
 
@@ -12,7 +12,8 @@ object AppCss {
       GlobalStyle,
       Header.Style,
       Loading.Style,
-      PostList.Style
+      PostList.Style,
+      Post.Style
     )
 
     GlobalRegistry.onRegistration(_.addToDocument())

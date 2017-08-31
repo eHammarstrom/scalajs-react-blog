@@ -9,6 +9,7 @@ import play.api.libs.json._
 import blog.Model
 import blog.components.{Header, Loading}
 import japgolly.scalajs.react.Callback
+import japgolly.scalajs.react.extra.router.Router
 
 import scalacss.DevDefaults._
 import scalacss.ScalaCssReact._
@@ -20,13 +21,48 @@ object PostList {
     import dsl._
 
     val content = style(
+      media.screen.maxWidth(768.px)(
+        width(100 %%)
+      ),
+      margin(`0`, auto),
+      width(768.px),
       marginTop(Header._height.px),
       display.flex,
-      justifyContent.center
+      flexDirection.column
+    )
+
+    val post = style(
+      position.relative,
+      boxShadow := "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+      padding(20.px),
+      width(100 %%),
+      marginBottom(20.px),
+    )
+
+    val readButton = style(
+      position.absolute,
+      right(10.px),
+      bottom(10.px),
+      paddingLeft(5.px),
+      paddingRight(5.px),
+      textDecoration := "none",
+      borderLeft(1.px, solid, mediumaquamarine),
+      borderRight(1.px, solid, mediumaquamarine),
+      color.mediumaquamarine,
+      backgroundColor.white,
+      fontSize(16.pt),
+      fontWeight.lighter,
+      cursor.pointer,
+      transition := "0.1s ease-in",
+      &.hover(
+        backgroundColor.mediumaquamarine,
+        color.white,
+        transition := "0.06s ease-in"
+      )
     )
   }
 
-  case class State(data: List[Model.Post], isLoading: Boolean)
+  case class State(data: List[Model.LightPost], isLoading: Boolean)
 
   class Backend(t: BackendScope[Unit, State]) {
     def initialize(): Callback = Callback.future {
@@ -45,20 +81,19 @@ object PostList {
         } else if (S.data.isEmpty) { // TODO: Display a friendly error
           <.h1("Error: no posts")
         } else {
-          <.div(
-            S.data.map(post =>
-              <.div(
-                <.h1(post.title),
-                <.p(post.description)
-              )
-            ).toTagMod
-          )
+          S.data.map(post =>
+            <.div(Style.post,
+              <.h1(Post.Style.postTitle, post.title),
+              <.p(post.description),
+              <.a(Style.readButton, "Read", ^.href := s"#/post/${post.id}")
+            )
+          ).toTagMod
         }
 
       )
   }
 
-  def retrievePosts(): Future[List[Model.Post]] = {
+  def retrievePosts(): Future[List[Model.LightPost]] = {
     HttpRequest()
       .withProtocol(HTTP)
       .withHost("localhost")
@@ -66,9 +101,9 @@ object PostList {
       .withPath("/api/blog/posts")
       .send()
       .map(res => Json.parse(res.body))
-      .map(json => Json.fromJson[List[Model.Post]](json))
+      .map(json => Json.fromJson[List[Model.LightPost]](json))
       .map({
-        case s: JsSuccess[List[Model.Post]] => s.value
+        case s: JsSuccess[List[Model.LightPost]] => s.value
         case _ => List.empty
       })
   }
