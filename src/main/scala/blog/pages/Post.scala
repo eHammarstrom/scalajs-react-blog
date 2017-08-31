@@ -51,7 +51,7 @@ object Post {
 
   case class State(post: FullPost, isLoading: Boolean)
 
-    class Backend(t: BackendScope[blog.AppRouter.Post, State]) {
+  class Backend(t: BackendScope[blog.AppRouter.Post, State]) {
     def initialize(P: blog.AppRouter.Post): Callback = Callback.future {
       for {
         p <- retrievePost(P.id)
@@ -74,7 +74,7 @@ object Post {
           <.div(Style.post,
             <.h1(Style.postTitle, S.post.title),
             <.p(Style.postDescription, S.post.description),
-            <.p(Style.postBody, S.post.body)
+            <.div(^.dangerouslySetInnerHtml := S.post.body) // Pre-rendered markdown from server
           )
         }
 

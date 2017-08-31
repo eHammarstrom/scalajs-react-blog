@@ -24,9 +24,8 @@ object PostList {
       media.screen.maxWidth(768.px)(
         width(100 %%)
       ),
-      margin(`0`, auto),
+      margin(Header._height.px, auto),
       width(768.px),
-      marginTop(Header._height.px),
       display.flex,
       flexDirection.column
     )

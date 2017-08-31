@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
 const R = require('ramda')
+const marked = require('marked')
 
 const app = express()
 const sequelize = new Sequelize('glowing-potato-db', 'postgres', '',
@@ -28,7 +29,7 @@ app.use(cors())
 
 app.get('/api', (_, res) => res.send('Alive and well.'))
 
-// pickMap :: [Post] -> [{ Post.id, Post.title, Post.description }]
+// pickMap :: [FullPost] -> [String] -> [LightPost]
 const pickMap = (ps, picks) => R.map(R.pick(picks), ps)
 
 app.get('/api/blog/posts', (req, res) =>
@@ -40,7 +41,10 @@ app.get('/api/blog/posts', (req, res) =>
     }))
 
 app.get('/api/blog/posts/:id', (req, res) =>
-    Post.findById(req.params.id).then(p => res.send(p))
+    Post.findById(req.params.id).then(p => {
+        p.body = marked(p.body)
+        res.send(p)
+    })
     .catch((e) => {
         console.error(e)
         res.send(pubError)
