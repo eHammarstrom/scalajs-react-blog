@@ -3,6 +3,7 @@ package blog.pages
 import blog.Model
 import blog.Model.FullPost
 import blog.components.{Header, Loading}
+import blog.css.GlobalStyle
 import fr.hmil.roshttp.HttpRequest
 import fr.hmil.roshttp.Protocol.HTTP
 import japgolly.scalajs.react._
@@ -20,16 +21,20 @@ object Post {
     import dsl._
 
     val content = style(
-      marginTop(Header._height.px),
-      display.flex,
-      justifyContent.center
-    )
-
-    val post = style(
       media.screen.maxWidth(768.px)(
         width(100 %%)
       ),
       width(768.px),
+      margin(Header._height.px, auto),
+      display.flex,
+      justifyContent.center,
+      alignItems.center,
+      flexDirection.column
+    )
+
+    val post = style(
+      boxSizing.borderBox,
+      width(100 %%),
       padding(10.px),
       border(2.px, solid, mediumaquamarine)
     )
@@ -46,6 +51,12 @@ object Post {
 
     val postBody = style(
       textIndent(10.px)
+    )
+
+    val backButton = style(
+      GlobalStyle.button,
+      alignSelf.flexStart,
+      marginBottom(20.px)
     )
   }
 
@@ -65,6 +76,7 @@ object Post {
 
     def render(S: State) =
       <.div(Style.content,
+        <.a(Style.backButton, "Back", ^.href := "#"),
 
         if (S.isLoading) {
           Loading()

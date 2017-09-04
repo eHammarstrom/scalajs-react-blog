@@ -15,6 +15,8 @@ import scalacss.DevDefaults._
 import scalacss.ScalaCssReact._
 import scala.concurrent.Future
 
+import blog.css.GlobalStyle
+
 object PostList {
 
   object Style extends StyleSheet.Inline {
@@ -39,25 +41,10 @@ object PostList {
     )
 
     val readButton = style(
+      GlobalStyle.button,
       position.absolute,
       right(10.px),
-      bottom(10.px),
-      paddingLeft(5.px),
-      paddingRight(5.px),
-      textDecoration := "none",
-      borderLeft(1.px, solid, mediumaquamarine),
-      borderRight(1.px, solid, mediumaquamarine),
-      color.mediumaquamarine,
-      backgroundColor.white,
-      fontSize(16.pt),
-      fontWeight.lighter,
-      cursor.pointer,
-      transition := "0.1s ease-in",
-      &.hover(
-        backgroundColor.mediumaquamarine,
-        color.white,
-        transition := "0.06s ease-in"
-      )
+      bottom(10.px)
     )
   }
 

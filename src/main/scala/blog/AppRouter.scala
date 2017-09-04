@@ -25,6 +25,7 @@ object AppRouter {
     (emptyRule
       | staticRoute("#/404", NotFound) ~> render(notFoundPage)
       | staticRoute(root, PostList) ~> render(pages.PostList())
+      | staticRoute("#", PostList) ~> render(pages.PostList())
       | dynamicRouteCT("#/post" / int.caseClass[Post]) ~> dynRender(pages.Post(_))
       ).notFound(redirectToPage(NotFound)(Redirect.Replace))
       .renderWith(layout)
